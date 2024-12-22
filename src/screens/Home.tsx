@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -9,13 +9,15 @@ import {
 } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import { StackNavigationProp } from "@react-navigation/stack";
+import { db } from "../services/firebaseConfig";
+import { collection, getDocs } from "firebase/firestore";
 
 interface Lembrete {
-    title: string;
-    category: string;
-    date: string;
-    color: string;
-  }
+  titulo: string;
+  data: string;
+  cor: string;
+  icone: string;
+}
 
 type HomeNavigationProp = StackNavigationProp<{
   AdicionarLembrete: undefined;
@@ -26,36 +28,40 @@ type Props = {
 };
 
 export default function Home({ navigation }: Props) {
-  const lembretes = [
-    {
-      title: "Creatina",
-      category: "12:00 pm",
-      date: "Todos os dias",
-      color: "#FFF4E3",
-    },
-    {
-      title: "Suplementação",
-      category: "12:00 am",
-      date: "Todos os dias",
-      color: "#E3FFE3",
-    },
-    {
-      title: "Fechar janela",
-      category: "14:00 pm",
-      date: "13/05/2025",
-      color: "#F9E6FF",
-    },
-  ];
+  const [lembretes, setLembretes] = useState<Lembrete[]>([]);
+  const [activeTab, setActiveTab] = useState("Lista completa");
+
+  const fetchLembretes = async () => {
+    try {
+      const lembretesSnapshot = await getDocs(collection(db, "lembretes"));
+      const lembretesList = lembretesSnapshot.docs.map((doc) => doc.data());
+
+      setLembretes(lembretesList as Lembrete[]);
+    } catch (error) {
+      console.error("Erro ao buscar lembretes:", error);
+    }
+  };
+
+  const formatTime = (dateString: string) => {
+    const date = new Date(dateString);
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+    return `${hours}:${minutes}`;
+  };
+
+  useEffect(() => {
+    fetchLembretes();
+  }, []);
 
   const renderItem = ({ item }: { item: Lembrete }) => (
     <TouchableOpacity
-      style={[styles.card, { backgroundColor: item.color }]}
+      style={[styles.card, { backgroundColor: item.cor }]}
       onPress={() => console.log("Card Pressed")}
     >
-      <Text style={styles.title}>{item.title}</Text>
+      <Text style={styles.title}>{item.icone + " " + item.titulo}</Text>
       <View style={styles.footer}>
-        <Text style={styles.category}>{item.category}</Text>
-        <Text style={styles.date}>{item.date}</Text>
+        <Text style={styles.category}>{formatTime(item.data)}</Text>
+        <Text style={styles.date}>{item.data}</Text>
       </View>
     </TouchableOpacity>
   );
@@ -63,20 +69,54 @@ export default function Home({ navigation }: Props) {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        {/*<Image source={require(".../assets/check.png")} style={styles.logo} />*/}
+        <Image
+          source={require("../../assets/check.png")}
+          style={styles.logo}
+        />
         <Text style={styles.appName}>did i forgot?</Text>
       </View>
 
       <View style={styles.tabs}>
-        <TouchableOpacity style={[styles.tab, styles.activeTab]}>
-          <Text style={[styles.tabText, styles.activeTabText]}>
+        <TouchableOpacity
+          style={[
+            styles.tab,
+            activeTab === "Lista completa" ? styles.activeTab : null,
+          ]}
+          onPress={() => setActiveTab("Lista completa")}
+        >
+          <Text
+            style={[
+              styles.tabText,
+              activeTab === "Lista completa" ? styles.activeTabText : null,
+            ]}
+          >
             Lista completa
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[
+            styles.tab,
+            activeTab === "Lista toda" ? styles.activeTab : null,
+          ]}
+          onPress={() => setActiveTab("Lista toda")}
+        >
+          <Text
+            style={[
+              styles.tabText,
+              activeTab === "Lista toda" ? styles.activeTabText : null,
+            ]}
+          >
+            Lista toda
           </Text>
         </TouchableOpacity>
       </View>
 
       <FlatList
-        data={lembretes}
+        data={lembretes.filter(
+          (item) =>
+            activeTab === "Lista completa" ? true : item.cor === "#ccc" 
+        )}
         keyExtractor={(item, index) => index.toString()}
         renderItem={renderItem}
         contentContainerStyle={styles.listContainer}
@@ -96,7 +136,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
-    paddingTop: 50,
+    paddingTop: 60,
     paddingHorizontal: 10,
   },
   header: {
@@ -115,15 +155,21 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   tabs: {
+    marginTop: 15,
+    marginBottom: 15,
     flexDirection: "row",
-    justifyContent: "center",
-    marginBottom: 10,
+    justifyContent: "center",        
+    backgroundColor: "#ddd",
+    borderRadius: 10,
+    overflow: "hidden",
+    width: "80%",  
+    alignSelf: "center", 
   },
   tab: {
-    padding: 10,
-    borderRadius: 20,
-    width: 160,
-    marginTop: 15,
+    flex: 1,
+    paddingTop: 20,
+    paddingBottom: 20,
+    alignItems: "center",
   },
   activeTab: {
     backgroundColor: "#000",
@@ -131,7 +177,6 @@ const styles = StyleSheet.create({
   tabText: {
     color: "#aaa",
     fontWeight: "bold",
-    textAlign: "center",
   },
   activeTabText: {
     color: "#fff",

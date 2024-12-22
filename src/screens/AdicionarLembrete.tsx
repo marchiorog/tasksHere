@@ -20,11 +20,12 @@ type Props = {
 };
 
 export default function Home({ navigation }: Props) {
-  const [title, setTitle] = useState("");
-  const [selectedIcon, setSelectedIcon] = useState("");
-  const [selectedColor, setSelectedColor] = useState("#ffffff");
+  const [titulo, setTitulo] = useState("");
+  const [icone, setIcone] = useState("");
+  const [cor, setCor] = useState("#ffffff");
+  const [frequencia, setFrequencia] = useState("Nenhuma");
   const [showTimePicker, setShowTimePicker] = useState(false);
-  const [time, setTime] = useState(new Date());
+  const [data, setData] = useState(new Date());
 
   const predefinedColors = [
     "#FFF4E3",
@@ -35,22 +36,19 @@ export default function Home({ navigation }: Props) {
     "#E3FFF4",
   ];
 
-  // Função para salvar o lembrete no Firestore
   const handleSave = async () => {
     try {
-      // Criação do objeto para salvar no Firestore
       const lembrete = {
-        title,
-        selectedIcon,
-        selectedColor,
-        time: time.toISOString(), // Convertendo a data para string no formato ISO
-        createdAt: new Date(), // Data de criação do lembrete
+        titulo,
+        icone,
+        cor,
+        frequencia,
+        data: data.toISOString(),
+        createdAt: new Date(),
       };
 
-      // Adicionando o lembrete à coleção "lembrete"
       await addDoc(collection(db, "lembretes"), lembrete);
 
-      // Navegar para a tela anterior após salvar
       navigation.goBack();
     } catch (error) {
       console.error("Erro ao salvar o lembrete:", error);
@@ -62,8 +60,8 @@ export default function Home({ navigation }: Props) {
       <Text style={styles.label}>Título:</Text>
       <TextInput
         style={styles.input}
-        value={title}
-        onChangeText={setTitle}
+        value={titulo}
+        onChangeText={setTitulo}
         placeholder="Digite o título"
         placeholderTextColor="#aaa"
       />
@@ -71,8 +69,8 @@ export default function Home({ navigation }: Props) {
       <Text style={styles.label}>Ícone:</Text>
       <TextInput
         style={styles.input}
-        value={selectedIcon}
-        onChangeText={setSelectedIcon}
+        value={icone}
+        onChangeText={setIcone}
         placeholder="Escolha um emoji"
         placeholderTextColor="#aaa"
         keyboardType="default"
@@ -87,10 +85,10 @@ export default function Home({ navigation }: Props) {
               styles.colorOption,
               {
                 backgroundColor: color,
-                borderWidth: selectedColor === color ? 3 : 0,
+                borderWidth: cor === color ? 3 : 0,
               },
             ]}
-            onPress={() => setSelectedColor(color)}
+            onPress={() => setCor(color)}
           />
         ))}
       </View>
@@ -100,17 +98,17 @@ export default function Home({ navigation }: Props) {
         onPress={() => setShowTimePicker(true)}
         style={styles.timePicker}
       >
-        <Text style={styles.timeText}>{time.toLocaleTimeString()}</Text>
+        <Text style={styles.timeText}>{data.toLocaleTimeString()}</Text>
       </TouchableOpacity>
 
       {showTimePicker && (
         <DateTimePicker
-          value={time}
+          value={data}
           mode="time"
           display="default"
           onChange={(event, selectedTime) => {
             setShowTimePicker(false);
-            if (selectedTime) setTime(selectedTime);
+            if (selectedTime) setData(selectedTime);
           }}
         />
       )}
@@ -163,6 +161,17 @@ const styles = StyleSheet.create({
   },
   timeText: {
     fontSize: 14,
+    color: "#555",
+  },
+  pickerContainer: {
+    backgroundColor: "#F8F8F8",
+    borderRadius: 5,
+    marginBottom: 20,
+    overflow: "hidden",
+  },
+  picker: {
+    height: 50,
+    width: "100%",
     color: "#555",
   },
   saveButton: {
