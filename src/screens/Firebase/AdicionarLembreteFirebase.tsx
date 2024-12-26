@@ -5,9 +5,9 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
-  Alert,
 } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { db } from "../services/firebaseConfig";
+import { collection, addDoc } from "firebase/firestore";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { StackNavigationProp } from "@react-navigation/stack";
 
@@ -47,17 +47,11 @@ export default function Home({ navigation }: Props) {
         createdAt: new Date(),
       };
 
-      // Salvar no AsyncStorage
-      const storedLembretes = await AsyncStorage.getItem("lembretes");
-      const lembretes = storedLembretes ? JSON.parse(storedLembretes) : [];
-      lembretes.push(lembrete);
-      await AsyncStorage.setItem("lembretes", JSON.stringify(lembretes));
+      await addDoc(collection(db, "lembretes"), lembrete);
 
-      Alert.alert("Sucesso", "Lembrete salvo com sucesso!");
       navigation.goBack();
     } catch (error) {
       console.error("Erro ao salvar o lembrete:", error);
-      Alert.alert("Erro", "Não foi possível salvar o lembrete.");
     }
   };
 

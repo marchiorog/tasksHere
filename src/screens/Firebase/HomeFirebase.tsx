@@ -8,9 +8,9 @@ import {
   Image,
 } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { StackNavigationProp } from "@react-navigation/stack";
-import { useNavigation, useIsFocused } from "@react-navigation/native"; // Importações necessárias
+import { db } from "../services/firebaseConfig";
+import { collection, getDocs } from "firebase/firestore";
 
 interface Lembrete {
   titulo: string;
@@ -29,35 +29,16 @@ type Props = {
 
 export default function Home({ navigation }: Props) {
   const [lembretes, setLembretes] = useState<Lembrete[]>([]);
-  const [activeTab, setActiveTab] = useState("Ativos");
-  const isFocused = useIsFocused(); // Hook para verificar se a tela está focada
+  const [activeTab, setActiveTab] = useState("Lista completa");
 
   const fetchLembretes = async () => {
     try {
-      const storedLembretes = await AsyncStorage.getItem("lembretes");
-      if (storedLembretes) {
-        setLembretes(JSON.parse(storedLembretes));
-      }
-    } catch (error) {
-      console.error(
-        "Erro ao carregar lembretes do armazenamento local:",
-        error
-      );
-    }
-  };
+      const lembretesSnapshot = await getDocs(collection(db, "lembretes"));
+      const lembretesList = lembretesSnapshot.docs.map((doc) => doc.data());
 
-  useEffect(() => {
-    if (isFocused) {
-      fetchLembretes(); // Recarregar lembretes quando a tela for focada
-    }
-  }, [isFocused]); // Depende de `isFocused`
-
-  const saveLembretes = async (newLembretes: Lembrete[]) => {
-    try {
-      await AsyncStorage.setItem("lembretes", JSON.stringify(newLembretes));
-      setLembretes(newLembretes);
+      setLembretes(lembretesList as Lembrete[]);
     } catch (error) {
-      console.error("Erro ao salvar lembretes no armazenamento local:", error);
+      console.error("Erro ao buscar lembretes:", error);
     }
   };
 
@@ -68,18 +49,9 @@ export default function Home({ navigation }: Props) {
     return `${hours}:${minutes}`;
   };
 
-  const renderItemCompleta = ({ item }: { item: Lembrete }) => (
-    <TouchableOpacity
-      style={[styles.card, { backgroundColor: item.cor }]}
-      onPress={() => console.log("Card Pressed")}
-    >
-      <Text style={styles.title}>{item.icone + " " + item.titulo}</Text>
-      <View style={styles.footer}>
-        <Text style={styles.category}>{formatTime(item.data)}</Text>
-        <Text style={styles.date}>Todos os dias</Text>
-      </View>
-    </TouchableOpacity>
-  );
+  useEffect(() => {
+    fetchLembretes();
+  }, []);
 
   const renderItem = ({ item }: { item: Lembrete }) => (
     <TouchableOpacity
@@ -89,6 +61,7 @@ export default function Home({ navigation }: Props) {
       <Text style={styles.title}>{item.icone + " " + item.titulo}</Text>
       <View style={styles.footer}>
         <Text style={styles.category}>{formatTime(item.data)}</Text>
+        <Text style={styles.date}>{item.data}</Text>
       </View>
     </TouchableOpacity>
   );
@@ -96,14 +69,20 @@ export default function Home({ navigation }: Props) {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Image source={require("../../assets/check.png")} style={styles.logo} />
+        <Image
+          source={require("../../assets/check.png")}
+          style={styles.logo}
+        />
         <Text style={styles.appName}>did i forgot?</Text>
       </View>
 
       <View style={styles.tabs}>
         <TouchableOpacity
-          style={[styles.tab, activeTab === "Ativos" ? styles.activeTab : null]}
-          onPress={() => setActiveTab("Ativos")}
+          style={[
+            styles.tab,
+            activeTab === "Lista completa" ? styles.activeTab : null,
+          ]}
+          onPress={() => setActiveTab("Lista completa")}
         >
           <Text
             style={[
@@ -111,31 +90,35 @@ export default function Home({ navigation }: Props) {
               activeTab === "Lista completa" ? styles.activeTabText : null,
             ]}
           >
-            Ativos
+            Lista completa
           </Text>
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={[styles.tab, activeTab === "Todos" ? styles.activeTab : null]}
-          onPress={() => setActiveTab("Todos")}
+          style={[
+            styles.tab,
+            activeTab === "Lista toda" ? styles.activeTab : null,
+          ]}
+          onPress={() => setActiveTab("Lista toda")}
         >
           <Text
             style={[
               styles.tabText,
-              activeTab === "Todos" ? styles.activeTabText : null,
+              activeTab === "Lista toda" ? styles.activeTabText : null,
             ]}
           >
-            Todos
+            Lista toda
           </Text>
         </TouchableOpacity>
       </View>
 
       <FlatList
-        data={lembretes.filter((item) =>
-          activeTab === "Ativos" ? item.cor !== "#ccc" : true
+        data={lembretes.filter(
+          (item) =>
+            activeTab === "Lista completa" ? true : item.cor === "#ccc" 
         )}
         keyExtractor={(item, index) => index.toString()}
-        renderItem={activeTab === "Ativos" ? renderItem : renderItemCompleta}
+        renderItem={renderItem}
         contentContainerStyle={styles.listContainer}
       />
 
@@ -175,16 +158,17 @@ const styles = StyleSheet.create({
     marginTop: 15,
     marginBottom: 15,
     flexDirection: "row",
-    justifyContent: "center",
+    justifyContent: "center",        
     backgroundColor: "#ddd",
     borderRadius: 10,
     overflow: "hidden",
-    width: "65%",
-    alignSelf: "center",
+    width: "80%",  
+    alignSelf: "center", 
   },
   tab: {
     flex: 1,
-    padding: 13,
+    paddingTop: 20,
+    paddingBottom: 20,
     alignItems: "center",
   },
   activeTab: {
