@@ -1,8 +1,8 @@
 import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import Home from "../screens/Home";
-import AdicionarLembrete from '../screens/AdicionarLembrete';
+import Home from "../screens/Home/Home";
+import AdicionarLembrete from '../screens/AdicionarLembrete/AdicionarLembrete';
 
 export type RootStackParamList = {
   Home: undefined;
