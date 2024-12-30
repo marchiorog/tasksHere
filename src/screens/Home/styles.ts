@@ -82,4 +82,21 @@ export const styles = StyleSheet.create({
     borderRadius: 30,
     padding: 15,
   },
+  okButton: {
+    padding: 5,
+    backgroundColor: "#4caf50",
+    borderRadius: 5,
+    marginLeft: 10,
+  },
+  deleteButton: {
+    padding: 5,
+    backgroundColor: "#ff6b6b",
+    borderRadius: 5,
+    marginLeft: 10,
+  },
+  cardContent: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
 });

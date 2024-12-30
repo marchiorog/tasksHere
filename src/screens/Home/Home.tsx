@@ -1,16 +1,9 @@
 import React, { useState, useEffect } from "react";
-import {
-  View,
-  Text,
-  FlatList,
-  TouchableOpacity,
-  StyleSheet,
-  Image,
-} from "react-native";
+import { View, Text, FlatList, TouchableOpacity, Image } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { StackNavigationProp } from "@react-navigation/stack";
-import { useNavigation, useIsFocused } from "@react-navigation/native"; // Importações necessárias
+import { useIsFocused } from "@react-navigation/native";
 import { styles } from "./styles";
 
 interface Lembrete {
@@ -31,7 +24,7 @@ type Props = {
 export default function Home({ navigation }: Props) {
   const [lembretes, setLembretes] = useState<Lembrete[]>([]);
   const [activeTab, setActiveTab] = useState("Ativos");
-  const isFocused = useIsFocused(); // Hook para verificar se a tela está focada
+  const isFocused = useIsFocused();
 
   const fetchLembretes = async () => {
     try {
@@ -49,9 +42,9 @@ export default function Home({ navigation }: Props) {
 
   useEffect(() => {
     if (isFocused) {
-      fetchLembretes(); // Recarregar lembretes quando a tela for focada
+      fetchLembretes();
     }
-  }, [isFocused]); // Depende de `isFocused`
+  }, [isFocused]);
 
   const saveLembretes = async (newLembretes: Lembrete[]) => {
     try {
@@ -82,12 +75,44 @@ export default function Home({ navigation }: Props) {
     </TouchableOpacity>
   );
 
+  const handleConfirm = (itemToConfirm: Lembrete) => {
+    // Nenhuma alteração na cor
+    const updatedLembretes = lembretes.filter(
+      (item) => item.titulo !== itemToConfirm.titulo
+    );
+    saveLembretes(updatedLembretes);
+  };
+
+  const handleDelete = (itemToDelete: Lembrete) => {
+    const updatedLembretes = lembretes.filter(
+      (item) => item.titulo !== itemToDelete.titulo
+    );
+    saveLembretes(updatedLembretes);
+  };
+
   const renderItem = ({ item }: { item: Lembrete }) => (
     <TouchableOpacity
       style={[styles.card, { backgroundColor: item.cor }]}
       onPress={() => console.log("Card Pressed")}
     >
-      <Text style={styles.title}>{item.icone + " " + item.titulo}</Text>
+      <View style={styles.cardContent}>
+        <Text style={styles.title}>{item.icone + " " + item.titulo}</Text>
+        {activeTab === "Ativos" ? (
+          <TouchableOpacity
+            style={styles.okButton}
+            onPress={() => handleConfirm(item)}
+          >
+            <Icon name="checkmark-outline" size={20} color="#fff" />
+          </TouchableOpacity>
+        ) : activeTab === "Todos" ? (
+          <TouchableOpacity
+            style={styles.deleteButton}
+            onPress={() => handleDelete(item)}
+          >
+            <Icon name="trash-outline" size={20} color="#fff" />
+          </TouchableOpacity>
+        ) : null}
+      </View>
       <View style={styles.footer}>
         <Text style={styles.category}>{formatTime(item.data)}</Text>
       </View>
@@ -97,7 +122,10 @@ export default function Home({ navigation }: Props) {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Image source={require("../../../assets/check.png")} style={styles.logo} />
+        <Image
+          source={require("../../../assets/check.png")}
+          style={styles.logo}
+        />
         <Text style={styles.appName}>did i forgot?</Text>
       </View>
 
@@ -133,10 +161,11 @@ export default function Home({ navigation }: Props) {
 
       <FlatList
         data={lembretes.filter((item) =>
-          activeTab === "Ativos" ? item.cor !== "#ccc" : true
+          activeTab === "Ativos" ? true : true
         )}
         keyExtractor={(item, index) => index.toString()}
-        renderItem={activeTab === "Ativos" ? renderItem : renderItemCompleta}
+        showsVerticalScrollIndicator={false}
+        renderItem={renderItem}
         contentContainerStyle={styles.listContainer}
       />
 
@@ -149,4 +178,3 @@ export default function Home({ navigation }: Props) {
     </View>
   );
 }
-

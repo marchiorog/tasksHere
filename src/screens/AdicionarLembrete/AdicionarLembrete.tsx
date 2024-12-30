@@ -1,12 +1,5 @@
 import React, { useState } from "react";
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  StyleSheet,
-  Alert,
-} from "react-native";
+import { View, Text, TextInput, TouchableOpacity, Alert } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { StackNavigationProp } from "@react-navigation/stack";
@@ -48,9 +41,14 @@ export default function Home({ navigation }: Props) {
         createdAt: new Date(),
       };
 
-      // Salvar no AsyncStorage
       const storedLembretes = await AsyncStorage.getItem("lembretes");
       const lembretes = storedLembretes ? JSON.parse(storedLembretes) : [];
+
+      if (lembretes.length >= 5) {
+        Alert.alert("Limite atingido", "Você só pode criar até 5 lembretes.");
+        return;
+      }
+
       lembretes.push(lembrete);
       await AsyncStorage.setItem("lembretes", JSON.stringify(lembretes));
 
