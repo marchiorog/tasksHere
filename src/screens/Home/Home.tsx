@@ -137,7 +137,7 @@ export default function Home({ navigation }: Props) {
           <Text
             style={[
               styles.tabText,
-              activeTab === "Lista completa" ? styles.activeTabText : null,
+              activeTab === "Ativos" ? styles.activeTabText : null,
             ]}
           >
             Ativos
