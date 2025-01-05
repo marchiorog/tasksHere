@@ -56,10 +56,25 @@ export const styles = StyleSheet.create({
     borderRadius: 10,
     marginBottom: 10,
   },
+  rowContainer: {
+    flexDirection: 'row',  // Alinha os itens na horizontal
+    alignItems: 'center',  // Alinha os itens verticalmente ao centro
+    justifyContent: 'space-between',  // Distribui o espaço entre os itens
+    width: '100%',  // Garante que os itens usem a largura total do card
+  },
+
+  emoji: {
+    fontSize: 20,  // Ajuste do tamanho do emoji
+    marginRight: 10,  // Espaço entre o emoji e o título
+  },
+
   title: {
     fontSize: 16,
+    fontWeight: 'bold',
+  },
+  horarioTitulo: {
+    fontSize: 13,
     fontWeight: "bold",
-    marginBottom: 10,
   },
   footer: {
     flexDirection: "row",

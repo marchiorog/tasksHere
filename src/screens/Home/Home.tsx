@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, FlatList, TouchableOpacity, Image } from "react-native";
+import {
+  View,
+  Text,
+  FlatList,
+  TouchableOpacity,
+  Image,
+  Alert,
+} from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { StackNavigationProp } from "@react-navigation/stack";
@@ -11,6 +18,7 @@ interface Lembrete {
   data: string;
   cor: string;
   icone: string;
+  concluido: boolean;
 }
 
 type HomeNavigationProp = StackNavigationProp<{
@@ -55,6 +63,48 @@ export default function Home({ navigation }: Props) {
     }
   };
 
+  const handleConfirm = (itemToConfirm: Lembrete) => {
+    Alert.alert(
+      "",
+      `Você tem certeza que deseja marcar o lembrete como concluído?`,
+      [
+        {
+          text: "Cancelar",
+          style: "cancel",
+        },
+        {
+          text: "Confirmar",
+          onPress: () => {
+            const updatedLembretes = lembretes.map((item) =>
+              item.titulo === itemToConfirm.titulo
+                ? { ...item, concluido: true }
+                : item
+            );
+            saveLembretes(updatedLembretes);
+          },
+        },
+      ]
+    );
+  };
+
+  const handleDelete = (itemToDelete: Lembrete) => {
+    Alert.alert("", `Você tem certeza que deseja excluir o lembrete?`, [
+      {
+        text: "Cancelar",
+        style: "cancel",
+      },
+      {
+        text: "Excluir",
+        onPress: () => {
+          const updatedLembretes = lembretes.filter(
+            (item) => item.titulo !== itemToDelete.titulo
+          );
+          saveLembretes(updatedLembretes);
+        },
+      },
+    ]);
+  };
+
   const formatTime = (dateString: string) => {
     const date = new Date(dateString);
     const hours = String(date.getHours()).padStart(2, "0");
@@ -67,28 +117,23 @@ export default function Home({ navigation }: Props) {
       style={[styles.card, { backgroundColor: item.cor }]}
       onPress={() => console.log("Card Pressed")}
     >
-      <Text style={styles.title}>{item.icone + " " + item.titulo}</Text>
+      <View style={styles.cardContent}>
+        <Text style={styles.title}>{item.icone + " " + item.titulo}</Text>
+        <TouchableOpacity
+          style={styles.deleteButton}
+          onPress={() => handleDelete(item)}
+        >
+          <Icon name="trash-outline" size={20} color="#fff" />
+        </TouchableOpacity>
+      </View>
       <View style={styles.footer}>
-        <Text style={styles.category}>{formatTime(item.data)}</Text>
-        <Text style={styles.date}>Todos os dias</Text>
+        <Text style={styles.horarioTitulo}>
+          Horário: 
+          <Text style={styles.category}>{" "+ formatTime(item.data)}</Text>
+        </Text>
       </View>
     </TouchableOpacity>
   );
-
-  const handleConfirm = (itemToConfirm: Lembrete) => {
-    // Nenhuma alteração na cor
-    const updatedLembretes = lembretes.filter(
-      (item) => item.titulo !== itemToConfirm.titulo
-    );
-    saveLembretes(updatedLembretes);
-  };
-
-  const handleDelete = (itemToDelete: Lembrete) => {
-    const updatedLembretes = lembretes.filter(
-      (item) => item.titulo !== itemToDelete.titulo
-    );
-    saveLembretes(updatedLembretes);
-  };
 
   const renderItem = ({ item }: { item: Lembrete }) => (
     <TouchableOpacity
@@ -96,27 +141,22 @@ export default function Home({ navigation }: Props) {
       onPress={() => console.log("Card Pressed")}
     >
       <View style={styles.cardContent}>
-        <Text style={styles.title}>{item.icone + " " + item.titulo}</Text>
-        {activeTab === "Ativos" ? (
-          <TouchableOpacity
-            style={styles.okButton}
-            onPress={() => handleConfirm(item)}
-          >
-            <Icon name="checkmark-outline" size={20} color="#fff" />
-          </TouchableOpacity>
-        ) : activeTab === "Todos" ? (
-          <TouchableOpacity
-            style={styles.deleteButton}
-            onPress={() => handleDelete(item)}
-          >
-            <Icon name="trash-outline" size={20} color="#fff" />
-          </TouchableOpacity>
-        ) : null}
-      </View>
-      <View style={styles.footer}>
-        <Text style={styles.category}>{formatTime(item.data)}</Text>
+        <Text style={styles.title}>
+          {item.icone + " " + item.titulo + " "}
+          <Text style={styles.category}>{formatTime(item.data)}</Text>
+        </Text>
+        <TouchableOpacity
+          style={styles.okButton}
+          onPress={() => handleConfirm(item)}
+        >
+          <Icon name="checkmark-outline" size={20} color="#fff" />
+        </TouchableOpacity>
       </View>
     </TouchableOpacity>
+  );
+
+  const filteredLembretes = lembretes.filter((item) =>
+    activeTab === "Ativos" ? !item.concluido : true
   );
 
   return (
@@ -126,7 +166,7 @@ export default function Home({ navigation }: Props) {
           source={require("../../../assets/check.png")}
           style={styles.logo}
         />
-        <Text style={styles.appName}>did i forgot?</Text>
+        <Text style={styles.appName}>eu esqueci?</Text>
       </View>
 
       <View style={styles.tabs}>
@@ -160,12 +200,10 @@ export default function Home({ navigation }: Props) {
       </View>
 
       <FlatList
-        data={lembretes.filter((item) =>
-          activeTab === "Ativos" ? true : true
-        )}
+        data={filteredLembretes}
         keyExtractor={(item, index) => index.toString()}
         showsVerticalScrollIndicator={false}
-        renderItem={renderItem}
+        renderItem={activeTab === "Ativos" ? renderItem : renderItemCompleta}
         contentContainerStyle={styles.listContainer}
       />
 
