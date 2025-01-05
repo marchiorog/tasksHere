@@ -83,7 +83,7 @@ export const styles = StyleSheet.create({
   },
   category: {
     fontSize: 12,
-    color: "#555",
+    color: "#a8a7a7",
   },
   date: {
     fontSize: 12,
