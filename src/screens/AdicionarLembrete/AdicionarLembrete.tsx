@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, TextInput, TouchableOpacity, Alert } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import DateTimePicker from "@react-native-community/datetimepicker";
@@ -6,14 +6,15 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { styles } from "./styles";
 
 type AdicionarLembreteNavigationProp = StackNavigationProp<{
-  AdicionarLembrete: undefined;
+  AdicionarLembrete: { lembrete?: Lembrete };
 }>;
 
 type Props = {
   navigation: AdicionarLembreteNavigationProp;
+  route: { params: { lembrete?: Lembrete } };
 };
 
-export default function Home({ navigation }: Props) {
+export default function AdicionarLembrete({ navigation, route }: Props) {
   const [titulo, setTitulo] = useState("");
   const [icone, setIcone] = useState("");
   const [cor, setCor] = useState("#ffffff");
@@ -30,6 +31,16 @@ export default function Home({ navigation }: Props) {
     "#E3FFF4",
   ];
 
+  useEffect(() => {
+    if (route.params?.lembrete) {
+      const { titulo, icone, cor, data } = route.params.lembrete;
+      setTitulo(titulo);
+      setIcone(icone);
+      setCor(cor);
+      setData(new Date(data));
+    }
+  }, [route.params?.lembrete]);
+
   const handleSave = async () => {
     try {
       const lembrete = {
@@ -44,13 +55,24 @@ export default function Home({ navigation }: Props) {
       const storedLembretes = await AsyncStorage.getItem("lembretes");
       const lembretes = storedLembretes ? JSON.parse(storedLembretes) : [];
 
-      if (lembretes.length >= 5) {
-        Alert.alert("Limite atingido", "Você só pode criar até 5 lembretes.");
-        return;
+      if (route.params?.lembrete) {
+        // Editando o lembrete
+        const updatedLembretes = lembretes.map((l) =>
+          l.titulo === route.params.lembrete?.titulo ? lembrete : l
+        );
+        await AsyncStorage.setItem(
+          "lembretes",
+          JSON.stringify(updatedLembretes)
+        );
+      } else {
+        // Adicionando um novo lembrete
+        if (lembretes.length >= 5) {
+          Alert.alert("Limite atingido", "Você só pode criar até 5 lembretes.");
+          return;
+        }
+        lembretes.push(lembrete);
+        await AsyncStorage.setItem("lembretes", JSON.stringify(lembretes));
       }
-
-      lembretes.push(lembrete);
-      await AsyncStorage.setItem("lembretes", JSON.stringify(lembretes));
 
       Alert.alert("Sucesso", "Lembrete salvo com sucesso!");
       navigation.goBack();
@@ -88,10 +110,7 @@ export default function Home({ navigation }: Props) {
             key={color}
             style={[
               styles.colorOption,
-              {
-                backgroundColor: color,
-                borderWidth: cor === color ? 3 : 0,
-              },
+              { backgroundColor: color, borderWidth: cor === color ? 3 : 0 },
             ]}
             onPress={() => setCor(color)}
           />
@@ -119,7 +138,7 @@ export default function Home({ navigation }: Props) {
       )}
 
       <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
-        <Text style={styles.saveButtonText}>Adicionar</Text>
+        <Text style={styles.saveButtonText}>Salvar</Text>
       </TouchableOpacity>
     </View>
   );
