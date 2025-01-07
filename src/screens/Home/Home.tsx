@@ -105,17 +105,12 @@ export default function Home({ navigation }: Props) {
     ]);
   };
 
-  const formatTime = (dateString: string) => {
-    const date = new Date(dateString);
-    const hours = String(date.getHours()).padStart(2, "0");
-    const minutes = String(date.getMinutes()).padStart(2, "0");
-    return `${hours}:${minutes}`;
-  };
-
   const renderItemCompleta = ({ item }: { item: Lembrete }) => (
     <TouchableOpacity
       style={[styles.card, { backgroundColor: item.cor }]}
-      onPress={() => navigation.navigate("AdicionarLembrete", { lembrete: item })}
+      onPress={() =>
+        navigation.navigate("AdicionarLembrete", { lembrete: item })
+      }
     >
       <View style={styles.cardContent}>
         <Text style={styles.title}>{item.icone + " " + item.titulo}</Text>
@@ -126,12 +121,6 @@ export default function Home({ navigation }: Props) {
           <Icon name="trash-outline" size={20} color="#fff" />
         </TouchableOpacity>
       </View>
-      <View style={styles.footer}>
-        <Text style={styles.horarioTitulo}>
-          Horário: 
-          <Text style={styles.category}>{" "+ formatTime(item.data)}</Text>
-        </Text>
-      </View>
     </TouchableOpacity>
   );
 
@@ -141,10 +130,7 @@ export default function Home({ navigation }: Props) {
       onPress={() => console.log("Card Pressed")}
     >
       <View style={styles.cardContent}>
-        <Text style={styles.title}>
-          {item.icone + " " + item.titulo + " "}
-          <Text style={styles.category}>{formatTime(item.data)}</Text>
-        </Text>
+        <Text style={styles.title}>{item.icone + " " + item.titulo + " "}</Text>
         <TouchableOpacity
           style={styles.okButton}
           onPress={() => handleConfirm(item)}
