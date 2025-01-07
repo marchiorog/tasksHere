@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, TextInput, TouchableOpacity, Alert } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import DateTimePicker from "@react-native-community/datetimepicker";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { styles } from "./styles";
 
@@ -18,8 +17,6 @@ export default function AdicionarLembrete({ navigation, route }: Props) {
   const [titulo, setTitulo] = useState("");
   const [icone, setIcone] = useState("");
   const [cor, setCor] = useState("#ffffff");
-  const [frequencia, setFrequencia] = useState("Nenhuma");
-  const [showTimePicker, setShowTimePicker] = useState(false);
   const [data, setData] = useState(new Date());
 
   const predefinedColors = [
@@ -47,7 +44,6 @@ export default function AdicionarLembrete({ navigation, route }: Props) {
         titulo,
         icone,
         cor,
-        frequencia,
         data: data.toISOString(),
         createdAt: new Date(),
       };
@@ -56,7 +52,6 @@ export default function AdicionarLembrete({ navigation, route }: Props) {
       const lembretes = storedLembretes ? JSON.parse(storedLembretes) : [];
 
       if (route.params?.lembrete) {
-        // Editando o lembrete
         const updatedLembretes = lembretes.map((l) =>
           l.titulo === route.params.lembrete?.titulo ? lembrete : l
         );
@@ -65,7 +60,6 @@ export default function AdicionarLembrete({ navigation, route }: Props) {
           JSON.stringify(updatedLembretes)
         );
       } else {
-        // Adicionando um novo lembrete
         if (lembretes.length >= 5) {
           Alert.alert("Limite atingido", "Você só pode criar até 5 lembretes.");
           return;
@@ -116,27 +110,6 @@ export default function AdicionarLembrete({ navigation, route }: Props) {
           />
         ))}
       </View>
-
-      <Text style={styles.label}>Horário do Lembrete:</Text>
-      <TouchableOpacity
-        onPress={() => setShowTimePicker(true)}
-        style={styles.timePicker}
-      >
-        <Text style={styles.timeText}>{data.toLocaleTimeString()}</Text>
-      </TouchableOpacity>
-
-      {showTimePicker && (
-        <DateTimePicker
-          value={data}
-          mode="time"
-          display="default"
-          onChange={(event, selectedTime) => {
-            setShowTimePicker(false);
-            if (selectedTime) setData(selectedTime);
-          }}
-        />
-      )}
-
       <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
         <Text style={styles.saveButtonText}>Salvar</Text>
       </TouchableOpacity>
