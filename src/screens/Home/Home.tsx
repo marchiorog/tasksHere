@@ -115,7 +115,7 @@ export default function Home({ navigation }: Props) {
   const renderItemCompleta = ({ item }: { item: Lembrete }) => (
     <TouchableOpacity
       style={[styles.card, { backgroundColor: item.cor }]}
-      onPress={() => console.log("Card Pressed")}
+      onPress={() => navigation.navigate("AdicionarLembrete", { lembrete: item })}
     >
       <View style={styles.cardContent}>
         <Text style={styles.title}>{item.icone + " " + item.titulo}</Text>
