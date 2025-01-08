@@ -152,7 +152,7 @@ export default function Home({ navigation }: Props) {
           source={require("../../../assets/check.png")}
           style={styles.logo}
         />
-        <Text style={styles.appName}>eu esqueci?</Text>
+        <Text style={styles.appName}>tasksHere</Text>
       </View>
 
       <View style={styles.tabs}>
@@ -166,7 +166,8 @@ export default function Home({ navigation }: Props) {
               activeTab === "Ativos" ? styles.activeTabText : null,
             ]}
           >
-            Ativos
+            ativos ({filteredLembretes.filter((item) => !item.concluido).length}
+            )
           </Text>
         </TouchableOpacity>
 
@@ -180,7 +181,7 @@ export default function Home({ navigation }: Props) {
               activeTab === "Todos" ? styles.activeTabText : null,
             ]}
           >
-            Todos
+            todos
           </Text>
         </TouchableOpacity>
       </View>
@@ -195,7 +196,9 @@ export default function Home({ navigation }: Props) {
 
       <TouchableOpacity
         style={styles.floatingButton}
-        onPress={() => navigation.navigate("AdicionarLembrete")}
+        onPress={() => {
+          navigation.navigate("AdicionarLembrete");
+        }}
       >
         <Icon name="add-outline" size={30} color="#fff" />
       </TouchableOpacity>

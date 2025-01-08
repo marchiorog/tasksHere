@@ -83,7 +83,7 @@ export default function AdicionarLembrete({ navigation, route }: Props) {
         style={styles.input}
         value={titulo}
         onChangeText={setTitulo}
-        placeholder="Digite o título"
+        placeholder="digite o título"
         placeholderTextColor="#aaa"
       />
 
@@ -92,7 +92,7 @@ export default function AdicionarLembrete({ navigation, route }: Props) {
         style={styles.input}
         value={icone}
         onChangeText={setIcone}
-        placeholder="Escolha um emoji"
+        placeholder="escolha um emoji  📝"
         placeholderTextColor="#aaa"
         keyboardType="default"
       />
@@ -111,7 +111,7 @@ export default function AdicionarLembrete({ navigation, route }: Props) {
         ))}
       </View>
       <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
-        <Text style={styles.saveButtonText}>Salvar</Text>
+        <Text style={styles.saveButtonText}>salvar</Text>
       </TouchableOpacity>
     </View>
   );

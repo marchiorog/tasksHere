@@ -55,7 +55,7 @@ export const styles = StyleSheet.create({
       color: "#555",
     },
     saveButton: {
-      backgroundColor: "#000",
+      backgroundColor: "#5ea872",
       paddingVertical: 15,
       borderRadius: 10,
       alignItems: "center",

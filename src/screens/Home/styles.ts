@@ -21,6 +21,7 @@ export const styles = StyleSheet.create({
   appName: {
     fontSize: 20,
     fontWeight: "bold",
+    color: "#313131",
   },
   tabs: {
     marginTop: 15,
@@ -39,7 +40,7 @@ export const styles = StyleSheet.create({
     alignItems: "center",
   },
   activeTab: {
-    backgroundColor: "#000",
+    backgroundColor: "#5ea872",
   },
   tabText: {
     color: "#aaa",
@@ -71,6 +72,7 @@ export const styles = StyleSheet.create({
   title: {
     fontSize: 16,
     fontWeight: 'bold',
+    color: "#313131",
   },
   horarioTitulo: {
     fontSize: 13,
@@ -93,7 +95,7 @@ export const styles = StyleSheet.create({
     position: "absolute",
     bottom: 20,
     right: 20,
-    backgroundColor: "#000",
+    backgroundColor: "#5ea872",
     borderRadius: 30,
     padding: 15,
   },
@@ -114,4 +116,20 @@ export const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
   },
+  congratulationsContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 20,
+    backgroundColor: "#f0f8ff", // cor de fundo suave para destacar
+    padding: 10,
+    borderRadius: 10,
+    marginHorizontal: 20,
+  },
+  
+  congratulationsText: {
+    fontSize: 18,
+    color: "#28a745", // cor verde para dar a sensação de sucesso
+    fontWeight: "bold",
+  }
+  
 });
