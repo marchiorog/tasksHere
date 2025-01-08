@@ -111,7 +111,7 @@ export default function AdicionarLembrete({ navigation, route }: Props) {
         ))}
       </View>
       <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
-        <Text style={styles.saveButtonText}>salvar</Text>
+        <Text style={styles.saveButtonText}>Salvar</Text>
       </TouchableOpacity>
     </View>
   );

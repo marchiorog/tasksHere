@@ -30,7 +30,7 @@ export const styles = StyleSheet.create({
       height: 40,
       borderRadius: 20,
       margin: 5,
-      borderColor: "#000",
+      borderColor: "#c7c7c7",
     },
     timePicker: {
       padding: 15,

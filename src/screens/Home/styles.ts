@@ -33,6 +33,11 @@ export const styles = StyleSheet.create({
     overflow: "hidden",
     width: "65%",
     alignSelf: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3, // Necessário para Android
   },
   tab: {
     flex: 1,
@@ -56,7 +61,10 @@ export const styles = StyleSheet.create({
     padding: 20,
     borderRadius: 10,
     marginBottom: 10,
+    backgroundColor: "#fff", // Adicione uma cor de fundo para que a sombra seja visível
+
   },
+
   rowContainer: {
     flexDirection: 'row',  // Alinha os itens na horizontal
     alignItems: 'center',  // Alinha os itens verticalmente ao centro
@@ -98,6 +106,11 @@ export const styles = StyleSheet.create({
     backgroundColor: "#5ea872",
     borderRadius: 30,
     padding: 15,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3, // Necessário para Android
   },
   okButton: {
     padding: 5,
