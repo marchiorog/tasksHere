@@ -3,6 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, Alert } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { styles } from "./styles";
+import { Lembrete } from "../../types/types";
 
 type AdicionarLembreteNavigationProp = StackNavigationProp<{
   AdicionarLembrete: { lembrete?: Lembrete };
@@ -52,7 +53,7 @@ export default function AdicionarLembrete({ navigation, route }: Props) {
       const lembretes = storedLembretes ? JSON.parse(storedLembretes) : [];
 
       if (route.params?.lembrete) {
-        const updatedLembretes = lembretes.map((l) =>
+        const updatedLembretes = lembretes.map((l: Lembrete) =>
           l.titulo === route.params.lembrete?.titulo ? lembrete : l
         );
         await AsyncStorage.setItem(

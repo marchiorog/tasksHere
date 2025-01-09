@@ -12,17 +12,10 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { useIsFocused } from "@react-navigation/native";
 import { styles } from "./styles";
-
-interface Lembrete {
-  titulo: string;
-  data: string;
-  cor: string;
-  icone: string;
-  concluido: boolean;
-}
+import { Lembrete } from "../../types/types";
 
 type HomeNavigationProp = StackNavigationProp<{
-  AdicionarLembrete: undefined;
+  AdicionarLembrete: { lembrete?: Lembrete };
 }>;
 
 type Props = {
@@ -39,13 +32,13 @@ export default function Home({ navigation }: Props) {
       const storedLembretes = await AsyncStorage.getItem("lembretes");
       const storedDate = await AsyncStorage.getItem("lastUpdateDate");
       const currentDate = new Date().toLocaleDateString();
-  
+
       if (storedDate !== currentDate) {
         if (storedLembretes) {
-          const lembretes = JSON.parse(storedLembretes);
-          const resetLembretes = lembretes.map((lembrete) => ({
+          const lembretes: Lembrete[] = JSON.parse(storedLembretes);
+          const resetLembretes = lembretes.map((lembrete: Lembrete) => ({
             ...lembrete,
-            concluido: false, // Redefine todos para não concluído
+            concluido: false,
           }));
           await saveLembretes(resetLembretes);
         }
@@ -62,7 +55,6 @@ export default function Home({ navigation }: Props) {
       );
     }
   };
-  
 
   useEffect(() => {
     if (isFocused) {
@@ -213,11 +205,12 @@ export default function Home({ navigation }: Props) {
       <TouchableOpacity
         style={styles.floatingButton}
         onPress={() => {
-          navigation.navigate("AdicionarLembrete");
+          navigation.navigate("AdicionarLembrete", { lembrete: undefined });
         }}
       >
         <Icon name="add-outline" size={30} color="#fff" />
       </TouchableOpacity>
+
     </View>
   );
 }
