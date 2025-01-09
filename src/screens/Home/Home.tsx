@@ -37,8 +37,23 @@ export default function Home({ navigation }: Props) {
   const fetchLembretes = async () => {
     try {
       const storedLembretes = await AsyncStorage.getItem("lembretes");
-      if (storedLembretes) {
-        setLembretes(JSON.parse(storedLembretes));
+      const storedDate = await AsyncStorage.getItem("lastUpdateDate");
+      const currentDate = new Date().toLocaleDateString();
+  
+      if (storedDate !== currentDate) {
+        if (storedLembretes) {
+          const lembretes = JSON.parse(storedLembretes);
+          const resetLembretes = lembretes.map((lembrete) => ({
+            ...lembrete,
+            concluido: false, // Redefine todos para não concluído
+          }));
+          await saveLembretes(resetLembretes);
+        }
+        await AsyncStorage.setItem("lastUpdateDate", currentDate);
+      } else {
+        if (storedLembretes) {
+          setLembretes(JSON.parse(storedLembretes));
+        }
       }
     } catch (error) {
       console.error(
@@ -47,6 +62,7 @@ export default function Home({ navigation }: Props) {
       );
     }
   };
+  
 
   useEffect(() => {
     if (isFocused) {

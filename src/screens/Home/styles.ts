@@ -16,7 +16,7 @@ export const styles = StyleSheet.create({
   logo: {
     width: 30,
     height: 30,
-    marginRight: 10,
+    marginRight: 5,
   },
   appName: {
     fontSize: 20,
