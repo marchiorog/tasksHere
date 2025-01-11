@@ -1,3 +1,8 @@
+export type RootStackParamList = {
+  AdicionarLembrete: { lembrete?: Lembrete };
+  Home: undefined;
+};
+
 export type Lembrete = {
   titulo: string;
   data: string;
