@@ -37,7 +37,7 @@ export const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
-    elevation: 3, // Necessário para Android
+    elevation: 3, 
   },
   tab: {
     flex: 1,
@@ -61,20 +61,20 @@ export const styles = StyleSheet.create({
     padding: 20,
     borderRadius: 10,
     marginBottom: 10,
-    backgroundColor: "#fff", // Adicione uma cor de fundo para que a sombra seja visível
+    backgroundColor: "#fff", 
 
   },
 
   rowContainer: {
-    flexDirection: 'row',  // Alinha os itens na horizontal
-    alignItems: 'center',  // Alinha os itens verticalmente ao centro
-    justifyContent: 'space-between',  // Distribui o espaço entre os itens
-    width: '100%',  // Garante que os itens usem a largura total do card
+    flexDirection: 'row',  
+    alignItems: 'center',  
+    justifyContent: 'space-between',  
+    width: '100%', 
   },
 
   emoji: {
-    fontSize: 20,  // Ajuste do tamanho do emoji
-    marginRight: 10,  // Espaço entre o emoji e o título
+    fontSize: 20,  
+    marginRight: 10,  
   },
 
   title: {
@@ -110,7 +110,7 @@ export const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
-    elevation: 3, // Necessário para Android
+    elevation: 3, 
   },
   okButton: {
     padding: 5,
@@ -133,7 +133,7 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginTop: 20,
-    backgroundColor: "#f0f8ff", // cor de fundo suave para destacar
+    backgroundColor: "#f0f8ff", 
     padding: 10,
     borderRadius: 10,
     marginHorizontal: 20,
@@ -141,7 +141,7 @@ export const styles = StyleSheet.create({
   
   congratulationsText: {
     fontSize: 18,
-    color: "#28a745", // cor verde para dar a sensação de sucesso
+    color: "#28a745", 
     fontWeight: "bold",
   }
   
