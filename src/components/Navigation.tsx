@@ -3,11 +3,8 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import Home from "../screens/Home/Home";
 import AdicionarLembrete from '../screens/AdicionarLembrete/AdicionarLembrete';
+import { RootStackParamList } from '../types/types';
 
-export type RootStackParamList = {
-  Home: undefined;
-  AdicionarLembrete: undefined;
-};
 
 const Stack = createStackNavigator<RootStackParamList>();
 
