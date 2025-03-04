@@ -76,7 +76,7 @@ export default function AdicionarLembrete({ navigation, route }: Props) {
         style={styles.input}
         value={icone}
         onChangeText={setIcone}
-        placeholder="Escolha um emoji 📝"
+        placeholder="Escolha um emoji"
         placeholderTextColor="#aaa"
         keyboardType="default"
       />

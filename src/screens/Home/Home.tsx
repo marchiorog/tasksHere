@@ -174,7 +174,7 @@ export default function Home({ navigation }: Props) {
               activeTab === "Ativos" ? styles.activeTabText : null,
             ]}
           >
-            ativos ({filteredLembretes.filter((item) => !item.concluido).length}
+            Ativos ({filteredLembretes.filter((item) => !item.concluido).length}
             )
           </Text>
         </TouchableOpacity>
@@ -189,7 +189,7 @@ export default function Home({ navigation }: Props) {
               activeTab === "Todos" ? styles.activeTabText : null,
             ]}
           >
-            todos
+            Todos
           </Text>
         </TouchableOpacity>
       </View>
