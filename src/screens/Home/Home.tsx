@@ -160,7 +160,7 @@ export default function Home({ navigation }: Props) {
           source={require("../../../assets/check.png")}
           style={styles.logo}
         />
-        <Text style={styles.appName}>tasksHere</Text>
+        <Text style={styles.appName}>Tasks Here</Text>
       </View>
 
       <View style={styles.tabs}>
